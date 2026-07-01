@@ -1,0 +1,47 @@
+steps:
+  # 1. Build Backend Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/civiclens-backend:latest', './backend']
+
+  # 2. Push Backend Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/civiclens-backend:latest']
+
+  # 3. Build Frontend Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/civiclens-frontend:latest', './frontend']
+
+  # 4. Push Frontend Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/civiclens-frontend:latest']
+
+  # 5. Deploy Backend to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'civiclens-backend'
+      - '--image=gcr.io/$PROJECT_ID/civiclens-backend:latest'
+      - '--region=us-central1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--port=8000'
+
+  # 6. Deploy Frontend to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'civiclens-frontend'
+      - '--image=gcr.io/$PROJECT_ID/civiclens-frontend:latest'
+      - '--region=us-central1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--port=3000'
+      - '--update-env-vars=NEXT_PUBLIC_API_URL=https://civiclens-backend-run-app-url-placeholder/api/v1'
+
+images:
+  - 'gcr.io/$PROJECT_ID/civiclens-backend:latest'
+  - 'gcr.io/$PROJECT_ID/civiclens-frontend:latest'
