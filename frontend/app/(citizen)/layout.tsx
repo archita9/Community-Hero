@@ -152,7 +152,15 @@ export default function CitizenLayout({ children }: { children: React.ReactNode 
         </header>
 
         {/* Page children */}
-        <main className="flex-1 overflow-y-auto p-8">{children}</main>
+        <main className="flex-1 overflow-y-auto p-8 flex flex-col justify-between">
+          <div className="flex-1 pb-12">{children}</div>
+          <footer className="border-t border-white/5 pt-6 mt-12 text-center text-xs text-gray-500">
+            <p className="font-semibold text-gray-400 mb-1">
+              Community Hero &copy; 2026. Developed and Maintained by <span className="text-blue-400 font-bold">Archita Goyal</span>.
+            </p>
+            <p>All Rights Reserved. Empowering Hyperlocal Public Resolution.</p>
+          </footer>
+        </main>
       </div>
     </div>
   );

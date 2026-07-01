@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/store';
@@ -41,24 +41,24 @@ export default function GovLayout({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!user || !['government', 'admin'].includes(user.role)) return null;
+  if (!user) return null;
 
   const navItems = [
-    { name: 'Officer Dashboard', path: '/government/dashboard', icon: BarChart3 },
-    { name: 'Open Issues Queue', path: '/government/issues', icon: ClipboardList },
-    { name: 'Ward Heatmaps', path: '/government/analytics', icon: Map },
-    { name: 'Predictive Audits', path: '/government/predictive', icon: ShieldAlert },
+    { name: 'Analytics Board', path: '/government/analytics', icon: BarChart3 },
+    { name: 'Issue Queue', path: '/government/issues', icon: ClipboardList },
+    { name: 'Predictive ML', path: '/government/predictive', icon: ShieldAlert },
+    { name: 'Live Mapping', path: '/map', icon: Map },
   ];
 
   return (
     <div className="min-h-screen flex bg-[#060b13]">
       {/* Sidebar */}
-      <aside className="w-64 border-r border-white/5 bg-[#0e1622]/90 backdrop-blur-md flex flex-col p-6">
+      <aside className="w-64 border-r border-white/5 bg-[#0a0f18]/80 backdrop-blur-md flex flex-col p-6">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center text-xl">
+          <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-xl">
             🏛️
           </div>
-          <span className="font-bold text-lg text-white">Gov Portal</span>
+          <span className="font-bold text-lg text-white">Gov Control</span>
         </div>
 
         <nav className="flex-1 space-y-2">
@@ -71,7 +71,7 @@ export default function GovLayout({ children }: { children: React.ReactNode }) {
                 href={item.path}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                   active
-                    ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                    ? 'bg-blue-600/10 text-blue-400 border border-blue-600/20'
                     : 'text-gray-400 hover:bg-white/5 hover:text-white'
                 }`}
               >
@@ -85,12 +85,12 @@ export default function GovLayout({ children }: { children: React.ReactNode }) {
         {/* Bottom card */}
         <div className="pt-6 border-t border-white/5 mt-auto">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center font-bold text-amber-400 border border-amber-500/30">
+            <div className="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center font-bold text-blue-400 border border-blue-600/30">
               {user.full_name?.charAt(0).toUpperCase() || 'O'}
             </div>
-            <div className="overflow-hidden">
+            <div>
               <div className="font-semibold text-sm text-white truncate">{user.full_name || 'Officer'}</div>
-              <div className="text-xs text-amber-400 truncate uppercase font-bold">{user.role}</div>
+              <div className="text-xs text-gray-400 truncate">{user.email || 'Dept Officer'}</div>
             </div>
           </div>
 
@@ -128,7 +128,15 @@ export default function GovLayout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Dashboard contents */}
-        <main className="flex-1 overflow-y-auto p-8">{children}</main>
+        <main className="flex-1 overflow-y-auto p-8 flex flex-col justify-between">
+          <div className="flex-1 pb-12">{children}</div>
+          <footer className="border-t border-white/5 pt-6 mt-12 text-center text-xs text-gray-500">
+            <p className="font-semibold text-gray-400 mb-1">
+              Community Hero &copy; 2026. Developed and Maintained by <span className="text-blue-400 font-bold">Archita Goyal</span>.
+            </p>
+            <p>All Rights Reserved. Empowering Hyperlocal Public Resolution.</p>
+          </footer>
+        </main>
       </div>
     </div>
   );
